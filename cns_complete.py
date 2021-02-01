@@ -3,9 +3,10 @@ import inspect
 
 from cudatext import *
 #from cudax_lib import get_translation
-from cudatext_keys import VK_SPACE
 
 #_   = get_translation(__file__)  # I18N
+
+VK_SPACE = 0x20
 
 class Command:
   
