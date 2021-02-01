@@ -19,7 +19,7 @@ class Command:
     h_in = dlg_proc(hcons, DLG_CTL_HANDLE, name='input')
     self.ed_in = Editor(h_in)
      
-    dlg_proc(hcons, DLG_PROP_SET, name='input', prop={ 
+    dlg_proc(hcons, DLG_PROP_SET, prop={ 
         'keypreview': True, # Should be True if form needs to handle on_key_down.
         'on_key_down': self.on_cns_key,
         })
