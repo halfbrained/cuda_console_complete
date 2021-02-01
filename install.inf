@@ -1,9 +1,10 @@
 [info]
 title=Console Auto-Completion
-desc=
+desc=Adds auto-completion to the built-in Console
 type=cudatext-plugin
 subdir=cuda_console_complete
-homepage=https://github.com/halfbrained/cuda_cns_complete
+homepage=https://github.com/halfbrained/cuda_console_complete
+api=1.0.361
 
 [item1]
 section=events
