@@ -3,7 +3,7 @@ title=Console Auto-Completion
 desc=
 type=cudatext-plugin
 subdir=cuda_console_complete
-homepage=https://github.com/halfbrained/cuda_console_complete
+homepage=https://github.com/halfbrained/cuda_cns_complete
 
 [item1]
 section=events
