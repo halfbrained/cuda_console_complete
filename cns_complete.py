@@ -11,7 +11,6 @@ fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
 SECTION = 'console_complete'
 
 VK_SPACE = 0x20
-FAIL_PRE_CHARS = {'"', "'"}
 
 prefix = 'id'
 replace_right_part = True
