@@ -138,7 +138,7 @@ class Command:
           f = Parcel._locals.get(name, self._get_globals().get(name))
             
         if not add_func_params  or not callable(f):
-          comp.append(f'{prefix}|{name}')
+          comp.append(prefix +'|'+ name)
             
         else:
           try:
@@ -159,14 +159,13 @@ class Command:
                   continue
                   
                 if i < noargs:
-                  sargs.append(f'{spec.args[i]}')
+                  sargs.append(spec.args[i])
                 else:
-                  sargs.append(f'{spec.args[i]}={spec.defaults[i-noargs].__repr__()}')
+                  sargs.append(spec.args[i] +'='+ spec.defaults[i-noargs].__repr__())
               
-              comp.append(f'{prefix}|{name}|({", ".join(sargs)})')
-              worked = True
+              comp.append('{0}|{1}|({2})'.format(prefix, name, ", ".join(sargs)))
           else:
-              comp.append(f'{prefix}|{name}()')
+              comp.append(prefix +'|'+ name)
           
     self._globals = None
     return comp
