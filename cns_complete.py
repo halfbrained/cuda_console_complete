@@ -1,3 +1,4 @@
+import os
 import re
 import inspect
 
@@ -6,12 +7,50 @@ from cudatext import *
 
 #_   = get_translation(__file__)  # I18N
 
+fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
+SECTION = 'console_complete'
+
 VK_SPACE = 0x20
+FAIL_PRE_CHARS = {'"', "'"}
+
+prefix = 'id'
+replace_right_part = True
+add_func_params = True
+
+def bool_to_str(v): return '1' if v else '0'
+def str_to_bool(s): return s=='1'
 
 class Command:
-  
   def __init__(self):
     self._globals = None
+    self.load_cfg()
+    
+  def load_cfg(self):
+    global prefix
+    global replace_right_part
+    global add_func_params
+    
+    prefix = ini_read(fn_config, SECTION, 'prefix', prefix)
+    replace_right_part = str_to_bool(
+          ini_read(fn_config, SECTION, 'replace_right_part', bool_to_str(replace_right_part)))
+    add_func_params = str_to_bool(
+          ini_read(fn_config, SECTION, 'add_func_params', bool_to_str(add_func_params)))
+          
+  def config(self):
+    global prefix
+    global replace_right_part
+    global add_func_params
+    
+    # to not ovewrite existing values
+    if ini_read(fn_config, SECTION, 'prefix', None) != None:
+      ini_write(fn_config, SECTION, 'prefix', value=prefix)
+      
+    if ini_read(fn_config, SECTION, 'replace_right_part', None) != None:
+      ini_write(fn_config, SECTION, 'replace_right_part', value=bool_to_str(replace_right_part))
+      
+    if ini_read(fn_config, SECTION, 'add_func_params', None) != None:
+      ini_write(fn_config, SECTION, 'add_func_params', value=bool_to_str(add_func_params))
+    file_open(fn_config)
     
   def on_start(self, ed_self):
     hcons = app_proc(PROC_GET_CONSOLE_FORM, '')
@@ -23,8 +62,11 @@ class Command:
         'keypreview': True, # Should be True if form needs to handle on_key_down.
         'on_key_down': self.on_cns_key,
         })
-      
     return
+    
+  def on_save(self, ed_self):
+    if ed_self.get_filename() == fn_config:
+      self.load_cfg()
 
   def on_cns_key(self, id_dlg, key_code, data='', info=''):
     state = data
@@ -38,15 +80,30 @@ class Command:
               'Parcel._locals = locals()')
 
       comp = None
-      text = self.ed_in.get_text_all().strip()
+      replace_r = 0
+      text_start = self.ed_in.get_text_all().strip()
 
       caretx = self.ed_in.get_carets()[0][0]
-      textr = text[:caretx][::-1] # text before caret reversed (for regex)
+      textr = text_start[:caretx][::-1] # text before caret reversed (for regex)
       
-      m = re.search('^[a-zA-Z0-9_.]+', textr)
+      m = re.search('^([a-zA-Z0-9_.]+)([\'"])?', textr)
       if m:
-        text = m[0][::-1]
-      else:
+        grs = m.groups()
+        if grs[1] != None: # have a "
+          text = ''
+        else:
+          text = grs[0][::-1]
+            
+        right_text = text_start[caretx:]
+        m = re.search('^([a-zA-Z0-9_.]+)([\'"])?', right_text)
+        if m:
+          grs = m.groups()
+          if grs[1] != None: # have a "
+            text = ''
+          elif replace_right_part:
+            replace_r = len(grs[0])
+            
+      else: # no match
         text = ''
       
       # method, field
@@ -71,7 +128,7 @@ class Command:
       if comp:
         comp.sort()
         
-        self.ed_in.complete('\n'.join(comp), replace_l, 0)
+        self.ed_in.complete('\n'.join(comp), replace_l, replace_r)
           
       
   def _get_comp(self, obj, pre):
@@ -87,11 +144,10 @@ class Command:
         else:
           f = Parcel._locals.get(name, self._get_globals().get(name))
             
-        if not callable(f):
-          comp.append(f'{name}|{name}')
+        if not add_func_params  or not callable(f):
+          comp.append(f'{prefix}|{name}')
             
         else:
-          
           try:
             # ArgSpec( args=['id_menu', 'id_action', 'command', 'caption', 'index', 'hotkey', 'tag'], 
             #          varargs=None, keywords=None, 
@@ -114,10 +170,10 @@ class Command:
                 else:
                   sargs.append(f'{spec.args[i]}={spec.defaults[i-noargs].__repr__()}')
               
-              comp.append(f'{name}|{name}|({", ".join(sargs)})')
+              comp.append(f'{prefix}|{name}|({", ".join(sargs)})')
               worked = True
           else:
-              comp.append(f'{name}|{name}()')
+              comp.append(f'{prefix}|{name}()')
           
     self._globals = None
     return comp
@@ -126,7 +182,7 @@ class Command:
     if self._globals == None:
       self._globals = globals()
     return self._globals
-      
+  
 class Parcel:
   _locals = None
     
