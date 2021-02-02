@@ -40,15 +40,9 @@ class Command:
     global replace_right_part
     global add_func_params
     
-    # to not ovewrite existing values
-    if ini_read(fn_config, SECTION, 'prefix', None) != None:
-      ini_write(fn_config, SECTION, 'prefix', value=prefix)
-      
-    if ini_read(fn_config, SECTION, 'replace_right_part', None) != None:
-      ini_write(fn_config, SECTION, 'replace_right_part', value=bool_to_str(replace_right_part))
-      
-    if ini_read(fn_config, SECTION, 'add_func_params', None) != None:
-      ini_write(fn_config, SECTION, 'add_func_params', value=bool_to_str(add_func_params))
+    ini_write(fn_config, SECTION, 'prefix', value=prefix)
+    ini_write(fn_config, SECTION, 'replace_right_part', value=bool_to_str(replace_right_part))
+    ini_write(fn_config, SECTION, 'add_func_params', value=bool_to_str(add_func_params))
     file_open(fn_config)
     
   def on_start(self, ed_self):
