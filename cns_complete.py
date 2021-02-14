@@ -21,7 +21,6 @@ def str_to_bool(s): return s=='1'
 
 class Command:
   def __init__(self):
-    self._globals = None
     self.load_cfg()
     
   def load_cfg(self):
@@ -67,10 +66,10 @@ class Command:
       self.complete()
         
   def complete(self, *args, **vargs):
-      # get Console locals()
-      if Parcel._locals == None:
-        app_proc(PROC_EXEC_PYTHON, 'from cuda_console_complete.cns_complete import Parcel; '+
-              'Parcel._locals = locals()')
+      # get Console variables
+      if Parcel._globals == None:
+        app_proc(PROC_EXEC_PYTHON, 'from cudatext import *; from cuda_console_complete.cns_complete import Parcel; '+
+              'Parcel._globals = globals(); del Parcel;')
 
       comp = None
       replace_r = 0
@@ -78,7 +77,7 @@ class Command:
 
       caretx = self.ed_in.get_carets()[0][0]
       textr = text_start[:caretx][::-1] # text before caret reversed (for regex)
-      
+
       m = re.search('^([a-zA-Z0-9_.]+)([\'"])?', textr)
       if m:
         grs = m.groups()
@@ -107,9 +106,7 @@ class Command:
             replace_l = len(spl[1])
             
             # search for target object
-            var = Parcel._locals.get(spl[0])
-            if var == None: # not in locals, search globals
-              var = self._get_globals().get(spl[0])
+            var = Parcel._globals.get(spl[0])
             
             if var != None:
               comp = self._get_comp(obj=var, pre=spl[1])
@@ -125,8 +122,8 @@ class Command:
           
       
   def _get_comp(self, obj, pre):
-    dir_res = dir(obj)  if obj != None else  set((*Parcel._locals, *self._get_globals()))
-        
+    dir_res = dir(obj)  if obj != None else  Parcel._globals
+    
     comp = []
     for name in dir_res:
         if not name.startswith(pre)   or name.startswith('__'):
@@ -135,7 +132,7 @@ class Command:
         if obj != None:
           f = getattr(obj, name)  
         else:
-          f = Parcel._locals.get(name, self._get_globals().get(name))
+          f = Parcel._globals.get(name)
             
         if not add_func_params  or not callable(f):
           comp.append(prefix +'|'+ name)
@@ -167,14 +164,8 @@ class Command:
           else:
               comp.append(prefix +'|'+ name)
           
-    self._globals = None
     return comp
     
-  def _get_globals(self):
-    if self._globals == None:
-      self._globals = globals()
-    return self._globals
-  
 class Parcel:
-  _locals = None
+  _globals = None
     
