@@ -1,2 +1,5 @@
+2021.03.07
++ add: support for field's fields completion: "a.b.c.d.comman" 
+
 2021.02.01
 initial version

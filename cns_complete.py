@@ -102,14 +102,22 @@ class Command:
       if '.' in text: 
           spl = text.split('.')
           
-          if len(spl) == 2:
-            replace_l = len(spl[1])
+          replace_l = len(spl[-1])
             
-            # search for target object
-            var = Parcel._globals.get(spl[0])
+          # search for target object
+          var = None
+          for fname in spl[:-1]:
+            if var is None:
+              var = Parcel._globals.get(fname)
+            else:
+              var = getattr(var, fname, None)
+              
+            if var is None:
+              break
             
-            if var != None:
-              comp = self._get_comp(obj=var, pre=spl[1])
+          if var != None:
+            comp = self._get_comp(obj=var, pre=spl[-1])
+              
       # var
       elif text: 
           replace_l = len(text)
@@ -168,4 +176,3 @@ class Command:
     
 class Parcel:
   _globals = None
-    
