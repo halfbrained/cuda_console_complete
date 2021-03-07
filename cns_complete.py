@@ -68,7 +68,7 @@ class Command:
   def complete(self, *args, **vargs):
       if self.ed_in.get_prop(PROP_FOCUSED):
         edt = self.ed_in
-      elif ed.get_prop(PROP_FOCUSED):
+      elif ed.get_prop(PROP_FOCUSED)  and  ed.get_prop(PROP_LEXER_CARET) == 'Python':
         edt = ed
       else:
         return
