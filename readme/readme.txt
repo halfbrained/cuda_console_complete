@@ -1,18 +1,14 @@
 Plugin for CudaText.
-Adds Python auto-completion to the built-in Console.
+Adds Python auto-completion to the built-in Console, which can be triggered in several ways:
+	- in Console - "Ctrl+Space" hotkey
+	- in Console and document tabs - menu item "Plugins > Console Auto-Complete > Complete", can be assigned to a hotkey via "Command Palette",
+			but should not be "Ctrl+Space" in presence of other "Python" auto-completion.
 
-Default hotkey:
-	Ctrl+Space - Completes current identifier in console
-
-Function can be accessed via the main menu: "Plugins > Console Auto-Completion". 
-
-Also works in document tabs; this goes nicely with "Execute selected text in console" command from "CudaExt" plugin.
-Other auto-completion plugins will interfere with this plugin's functionality in document tabs if command in "Command Palette" is assigned "Ctrl+Space" hotkey.
-
+Auto-completion in documents is nicely complemented by "Execute selected text in console" command from "CudaExt" plugin.
 
 -----------------------------
 
-Several options are available to modify the behavior of the plugin. Can be accessed via main menu:
+A few options are available to modify the behavior of the plugin. Can be accessed via main menu:
 "Options / Settings-pligins / Console Auto-Completion".
 
 - Show function parameters in auto-completion list
