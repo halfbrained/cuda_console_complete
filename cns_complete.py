@@ -66,16 +66,23 @@ class Command:
       self.complete()
         
   def complete(self, *args, **vargs):
+      if self.ed_in.get_prop(PROP_FOCUSED):
+        edt = self.ed_in
+      elif ed.get_prop(PROP_FOCUSED):
+        edt = ed
+      else:
+        return
+        
       # get Console variables
       if Parcel._globals == None:
         app_proc(PROC_EXEC_PYTHON, 'from cudatext import *; from cuda_console_complete.cns_complete import Parcel; '+
               'Parcel._globals = globals(); del Parcel;')
 
+      caretx, carety, _x2, _y2 = edt.get_carets()[0]
       comp = None
       replace_r = 0
-      text_start = self.ed_in.get_text_all().strip()
+      text_start = edt.get_text_line(carety).strip()
 
-      caretx = self.ed_in.get_carets()[0][0]
       textr = text_start[:caretx][::-1] # text before caret reversed (for regex)
 
       m = re.search('^([a-zA-Z0-9_.]+)([\'"])?', textr)
@@ -126,7 +133,7 @@ class Command:
       if comp:
         comp.sort()
         
-        self.ed_in.complete('\n'.join(comp), replace_l, replace_r)
+        edt.complete('\n'.join(comp), replace_l, replace_r)
           
       
   def _get_comp(self, obj, pre):

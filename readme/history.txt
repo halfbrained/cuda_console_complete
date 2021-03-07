@@ -1,5 +1,6 @@
 2021.03.07
 + add: support for field's fields completion: "a.b.c.d.comman" 
++ add: console completion in active editor
 
 2021.02.01
 initial version
