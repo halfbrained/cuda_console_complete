@@ -84,7 +84,7 @@ class Command:
       caretx, carety, _x2, _y2 = edt.get_carets()[0]
       comp = None
       replace_r = 0
-      text_start = edt.get_text_line(carety).strip()
+      text_start = edt.get_text_line(carety)
 
       textr = text_start[:caretx][::-1] # text before caret reversed (for regex)
 
