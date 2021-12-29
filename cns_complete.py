@@ -67,6 +67,7 @@ class Command:
     state = data
     if key_code == VK_SPACE  and state == 'c':
       self.complete()
+      return False # block space-key to not add it to console
 
   def complete(self, *args, **vargs):
       if self.ed_in.get_prop(PROP_FOCUSED):
