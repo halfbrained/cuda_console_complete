@@ -4,12 +4,11 @@ desc=Adds auto-completion to the built-in Console
 type=cudatext-plugin
 subdir=cuda_console_complete
 homepage=https://github.com/halfbrained/cuda_console_complete
-api=1.0.385
+api=1.0.444
 
 [item1]
 section=events
-events=on_save,on_console_nav
-
+events=on_save,on_console_complete
 
 [item10]
 section=commands

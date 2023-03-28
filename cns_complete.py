@@ -28,11 +28,6 @@ class Command:
     h_in = dlg_proc(hcons, DLG_CTL_HANDLE, name='input')
     self.ed_in = Editor(h_in)
 
-    dlg_proc(hcons, DLG_PROP_SET, prop={
-        'keypreview': True, # Should be True if form needs to handle on_key_down.
-        'on_key_down': self.on_cns_key,
-        })
-
 
   def load_cfg(self):
     global prefix
@@ -55,19 +50,13 @@ class Command:
     ini_write(fn_config, SECTION, 'add_func_params', value=bool_to_str(add_func_params))
     file_open(fn_config)
 
-  # just to load the plugin on first Console input
-  def on_console_nav(self, ed_self, text):
-    pass
-
   def on_save(self, ed_self):
     if ed_self.get_filename() == fn_config:
       self.load_cfg()
 
-  def on_cns_key(self, id_dlg, key_code, data='', info=''):
-    state = data
-    if key_code == VK_SPACE  and state == 'c':
-      self.complete()
-      return False # block space-key to not add it to console
+  def on_console_complete(self, ed_self):
+    self.complete()
+    return True
 
   def complete(self, *args, **vargs):
       if self.ed_in.get_prop(PROP_FOCUSED):
