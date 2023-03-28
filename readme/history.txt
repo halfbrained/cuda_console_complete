@@ -1,5 +1,5 @@
 2023.03.28
-* change: plugin is reworked for new API of CudaText 1.189. For CudaText before 1.189 you need the old version of plugin: https://sourceforge.net/projects/cudatext/files/addons/plugins/plugin.Console_Auto-Completion_old.zip/download
+* change: plugin is reworked for API of CudaText 1.189, now it is loaded only on pressing Ctrl+Space in the Console, and not on the first input. For CudaText before 1.189 you need the old version of plugin: https://sourceforge.net/projects/cudatext/files/addons/plugins/plugin.Console_Auto-Completion_old.zip/download
 
 2021.04.18
 * change: delay plugin loading until Console is being interacted with 
